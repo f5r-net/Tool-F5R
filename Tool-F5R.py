@@ -1,8 +1,8 @@
-import requests
+import asyncio
+import aiohttp
 import sys
 import socket
-
-print("      https://t.me/Icanflyy1   	")
+from urllib.parse import urlparse
 
 # COLORS #
 class bcolors:
@@ -16,102 +16,85 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+# Validate URL
+def validate_url(url):
+    parsed = urlparse(url)
+    if not parsed.scheme:
+        url = "http://" + url
+    return url
 
-if len(sys.argv) != 2:
-    print("\n Error: Type python3 potin.py yourfile.txt\n")
-    sys.exit()
-else:
-    f = open(sys.argv[1], 'r')
-    lines = f.readlines()
-    f.close()
-
-    filename = 'potin_files/' + sys.argv[1].replace('../', '') + '_output.txt'
-    ip_filename = 'potin_files/ip.txt'
-    out = open(filename, 'w+')
-    ip_out = open(ip_filename, 'w+')
-
-for line in lines:
+# Get IP Address
+def get_ip(url):
     try:
-        if 'http://' in line.strip() or 'https://' in line.strip():
-            url = line.strip()
-        else:
-            url = 'http://' + line.strip()
+        hostname = urlparse(url).netloc
+        return socket.gethostbyname(hostname)
+    except socket.gaierror:
+        return "IP not found"
 
-        s = requests.Session()
-        r = s.head(url, timeout=1)
-        response = r.headers
+# Process single URL
+async def process_url(url, session, output, ip_output, retries=3):
+    url = validate_url(url.strip())
+    for attempt in range(retries):
+        try:
+            async with session.head(url, timeout=aiohttp.ClientTimeout(total=10)) as response:
+                status = response.status
+                server = response.headers.get("server", "Unknown")
+                ip = get_ip(url)
 
-        out.write(url + ':' + str(r.status_code) + '\n')
+                # Save results
+                output.append(f"{url}: {status}")
+                ip_output.append(f"{ip}")
 
-        if r.status_code == 200:
-            ip = socket.gethostbyname(url.replace('http://', '').replace('https://', ''))
-            ip_out.write(ip + '\n')
+                # Print results
+                if status == 200:
+                    print(f"{bcolors.OKGREEN}[200 OK]{bcolors.ENDC} {url} | Server: {server} | IP: {ip}")
+                elif status in [301, 302, 308]:
+                    print(f"{bcolors.OKCYAN}[{status} Redirect]{bcolors.ENDC} {url} | Server: {server} | IP: {ip}")
+                elif status == 403:
+                    print(f"{bcolors.WARNING}[403 Forbidden]{bcolors.ENDC} {url} | Server: {server} | IP: {ip}")
+                else:
+                    print(f"{bcolors.FAIL}[{status} Error]{bcolors.ENDC} {url} | Server: {server} | IP: {ip}")
+                return
+        except (aiohttp.ClientError, asyncio.exceptions.TimeoutError) as e:
+            print(f"{bcolors.WARNING}[Attempt {attempt + 1}]{bcolors.ENDC} {url} - {str(e)}")
+        except asyncio.exceptions.CancelledError:
+            print(f"{bcolors.FAIL}[Cancelled]{bcolors.ENDC} {url} - Request cancelled unexpectedly")
+            return
+        await asyncio.sleep(2)  # Wait before retrying
+    print(f"{bcolors.FAIL}[Failed]{bcolors.ENDC} {url} - All retries exhausted")
 
-            try:
-                print("\n", '\x1b[6;30;42m', '[OK]200', bcolors.ENDC, ':', url, r.headers['server'])
-                print("IP Address:", ip)
-            except KeyError:
-                print('Server not found')
-                print("IP Address:", ip)
+# Main function
+async def main(file_path):
+    try:
+        # Read URLs from file
+        with open(file_path, 'r') as f:
+            urls = f.readlines()
 
-        if r.status_code == 308:
-            ip = socket.gethostbyname(url.replace('http://', '').replace('https://', ''))
-            ip_out.write(ip + '\n')
+        # Prepare outputs
+        output = []
+        ip_output = []
 
-            try:
-                print("\n", '\x1b[6;39;40m', '[308]', bcolors.OKBLUE, ':', url, r.headers['server'])
-                print("IP Address:", ip)
-            except KeyError:
-                print('Server not found')
-                print("IP Address:", ip)
+        async with aiohttp.ClientSession() as session:
+            tasks = [process_url(url, session, output, ip_output) for url in urls]
+            await asyncio.gather(*tasks)
 
-        if r.status_code == 302:
-            ip = socket.gethostbyname(url.replace('http://', '').replace('https://', ''))
-            ip_out.write(ip + '\n')
+        # Save to files
+        output_file = f"results/output_{file_path}.txt"
+        ip_file = f"results/ip_{file_path}.txt"
 
-            print('\n', bcolors.FAIL, r.status_code, ' : ', url, r.headers)
-            print("IP Address:", ip)
+        with open(output_file, 'w') as out_f, open(ip_file, 'w') as ip_f:
+            out_f.write("\n".join(output))
+            ip_f.write("\n".join(ip_output))
 
-        if r.status_code == 301:
-            ip = socket.gethostbyname(url.replace('http://', '').replace('https://', ''))
-            ip_out.write(ip + '\n')
+        print(f"\nResults saved in: {output_file}")
+        print(f"IP addresses saved in: {ip_file}")
 
-            try:
-                print("\n", '\x1b[6;39;40m', '[301]', bcolors.OKCYAN, ':', url, r.headers['server'])
-                print("IP Address:", ip)
-            except KeyError:
-                print('Server not found')
-                print("IP Address:", ip)
+    except FileNotFoundError:
+        print(f"{bcolors.FAIL}Error: File not found!{bcolors.ENDC}")
 
-        if r.status_code == 403:
-            ip = socket.gethostbyname(url.replace('http://', '').replace('https://', ''))
-            ip_out.write(ip + '\n')
-
-            try:
-                print("\n", '\x1b[6;39;40m', '[403]', bcolors.OKGREEN, ':', url, r.headers['server'])
-                print("IP Address:", ip)
-            except KeyError:
-                print('Server not found')
-                print("IP Address:", ip)
-
-    except requests.ConnectionError as e:
-        print("\n", bcolors.ENDC + url + bcolors.FAIL + " Failed to connect ")
-        continue
-    except requests.Timeout as e:
-        print("[!] : Timeout Error")
-        continue
-    except requests.RequestException as e:
-        print("[!] : General Error")
-        continue
-
-    except KeyboardInterrupt:
-        out.close()
-        ip_out.close()
-        print("\nOutput saved in: " + filename)
-        print("IP addresses saved in: " + ip_filename)
-        exit()
-
-print("\nOutput saved in: " + filename)
-print("IP addresses saved in: " + ip_filename)
-out.close()
-ip_out.close
+# Entry point
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print(f"{bcolors.FAIL}Usage: python3 script.py yourfile.txt{bcolors.ENDC}")
+    else:
+        asyncio.run(main(sys.argv[1]))
