@@ -1,0 +1,20 @@
+{
+  "project": {
+    "name": "Proxy Master",
+    "version": "3.1",
+    "description": "أداة متقدمة لجمع وفحص البروكسيات"
+  },
+  "developer": {
+    "name": "اسمك هنا",
+    "contact": "your.email@example.com",
+    "github": "https://github.com/yourusername"
+  },
+  "repository": {
+    "url": "https://github.com/yourusername/repo-name",
+    "file_url": "https://raw.githubusercontent.com/yourusername/repo-name/main/project_info.json"
+  },
+  "metadata": {
+    "last_updated": "2024-07-20",
+    "license": "MIT"
+  }
+}
