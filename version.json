@@ -1,0 +1,29 @@
+{
+  "phone_number": "+963992388932",
+  "developer_name": "Abbas Al Khalifa ",
+  "company_name": "devf5r",
+  "github_url": "https://github.com/f5r-net",
+  "facebook_url": "https://facebook.com/devf5r",
+  "telegram_url": "https://t.me/devf5r",
+  "version_number": "1.0.0",
+  "update_message": "التحديثات الجديدة تشمل إصلاحات وتحسينات في الأداء",
+  
+  "links": [
+    {
+      "url": "https://link1.example.com",
+      "visible": false
+    },
+    {
+      "url": "https://link2.example.com",
+      "visible": false
+    },
+    {
+      "url": "https://link3.example.com",
+      "visible": false
+    },
+    {
+      "url": "https://link4.example.com",
+      "visible": false
+    }
+  ]
+}
