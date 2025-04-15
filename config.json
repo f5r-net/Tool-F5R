@@ -1,0 +1,17 @@
+{
+    "version": "1.3.0",
+    "developer": {
+        "name": "F5R Team",
+        "contact": "support@f5r.net",
+        "github": "https://github.com/f5r-net"
+    },
+    "update_message": "تحسينات في سرعة الفحص ودعم النطاقات الفرعية الديناميكية",
+    "download_url": "https://github.com/f5r-net/Tool-F5R/releases",
+    "additional_urls": [
+        "https://f5r.net",
+        "https://portal.f5r.net",
+        "https://api.f5r.net",
+        "https://cdn.f5r.net"
+    ],
+    "subdomains_source": "https://raw.githubusercontent.com/f5r-net/Tool-F5R/main/subdomains.txt"
+}
