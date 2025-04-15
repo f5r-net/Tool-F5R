@@ -1,21 +1,39 @@
 {
   "project": {
-    "name": "Proxy Master",
-    "version": "3.1",
-    "description": "أداة متقدمة لجمع وفحص البروكسيات"
+    "name": "𓃠 PROXY MASTER",
+    "version": "4.0",
+    "description": "🔧 أداة متقدمة لإدارة البروكسيات مع واجهة تفاعلية",
+    "emoji": "🛡️⚡🌐"
   },
   "developer": {
     "name": "Abbas Al Khalifa",
-    "contact": "devf5r@gmail.com",
-    "github": "https://github.com/yourusername"
+    "contact": "📧 devf5r@gmail.com",
+    "github": "https://github.com/f5r-net"
   },
   "repository": {
     "url": "https://github.com/f5r-net/Tool-F5R",
     "file_url": "https://raw.githubusercontent.com/f5r-net/Tool-F5R/refs/heads/main/project_info.json"
   },
-  "metadata": {
-    "last_updated": "2024-07-20",
-    "license": "MIT"
-  }
+  "resources": {
+    "external_links": [
+      {
+        "name": "📚 وثائق الاستخدام",
+        "url": "https://your-docs-site.com"
+      },
+      {
+        "name": "💾 تنزيل الإصدارات",
+        "url": "https://your-repo.com/releases"
+      }
+    ]
+  },
+  "setup": {
+    "first_run": true,
+    "instructions": [
+      "✨ قم بإعداد ملف sites.txt يحتوي على قوائم المواقع",
+      "⚙️ ثبت المتطلبات باستخدام: pip install -r requirements.txt",
+      "🚀 شغل البرنامج: python proxy_master.py",
+      "🔍 اتبع التعليمات في الواجهة التفاعلية"
+    ]
+  },
+  "license": "📜 GPL-3.0"
 }
-
