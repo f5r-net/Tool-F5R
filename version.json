@@ -28,15 +28,6 @@
     "downloads": "https://github.com/f5r-net/Tool-F5R/releases",
     "subdomains_source": "https://raw.githubusercontent.com/f5r-net/Tool-F5R/main/subdomains.txt"
   },
-  "resources": {
-    "documentation": "https://docs.f5r.net/proxy-master",
-    "additional_services": [
-      "https://f5r.net",
-      "https://portal.f5r.net",
-      "https://api.f5r.net",
-      "https://cdn.f5r.net"
-    ]
-  },
   "links": [
     {
       "url": "https://f5r.net",
